@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MajlisHub - Plan Your Dream Wedding</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* CSS VARIABLES FOR EASY COLOR TWEAKS */
+        :root {
+            --pink: #E91E63;
+            --purple: #9C27B0;
+            --orange: #FFFF9800;
+            --bg-color: #FFF9FA; /* Very soft pink/white background */
+            --text-main: #333333;
+            --text-light: #777777;
+        }
+
+        /* GLOBAL STYLES */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+        a {
+            text-decoration: none;
+        }
+
+        /* NAVBAR */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--pink);
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 10px;
+        }
+        .nav-links a {
+            margin-left: 20px;
+            color: var(--text-main);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover {
+            color: var(--pink);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 5%;
+            background: linear-gradient(135deg, var(--pink), var(--purple));
+            color: white;
+            border-radius: 0 0 50px 50px; /* Bubbly bottom curve */
+        }
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+        }
+        .hero-content h1 {
+            font-size: 48px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        .hero-image {
+            flex: 1;
+            text-align: right;
+            position: relative;
+        }
+        .hero-image img {
+            max-width: 80%;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: rotate(2deg); /* Playful tilt */
+        }
+
+        /* APP STORE BUTTONS */
+        .store-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        .store-btn {
+            display: flex;
+            align-items: center;
+            background-color: #111;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .store-btn i {
+            font-size: 24px;
+            margin-right: 10px;
+        }
+        .store-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        /* FEATURES SECTION */
+        .features {
+            padding: 80px 5%;
+            text-align: center;
+        }
+        .features h2 {
+            font-size: 36px;
+            margin-bottom: 50px;
+            color: var(--purple);
+        }
+        .feature-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .feature-card {
+            background: white;
+            padding: 40px 20px;
+            border-radius: 30px;
+            width: 30%;
+            min-width: 250px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        .icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: #FFF0F5;
+            color: var(--pink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin: 0 auto 20px;
+        }
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+        .feature-card p {
+            color: var(--text-light);
+            font-size: 15px;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            color: var(--text-light);
+            border-top: 1px solid #EEE;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 900px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 50px 5%;
+            }
+            .hero-content {
+                margin-bottom: 50px;
+            }
+            .store-buttons {
+                justify-content: center;
+            }
+            .hero-image img {
+                max-width: 100%;
+                transform: rotate(0);
+            }
+            .feature-card {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="https://via.placeholder.com/100x100.png?text=M" alt="MajlisHub Logo">
+            MajlisHub
+        </div>
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#download">Download</a>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Your Dream Wedding, All in One Place.</h1>
+            <p>Say goodbye to wedding stress. MajlisHub is your ultimate companion to discover top-rated vendors, manage your smart checklist, and plan your big day flawlessly from your phone.</p>
+            
+            <div class="store-buttons" id="download">
+                <a href="#" class="store-btn">
+                    <i class="fab fa-apple"></i>
+                    <div>
+                        <span style="font-size: 10px; font-weight: 400; display: block;">Download on the</span>
+                        App Store
+                    </div>
+                </a>
+                <a href="#" class="store-btn">
+                    <i class="fab fa-google-play"></i>
+                    <div>
+                        <span style="font-size: 10px; font-weight: 400; display: block;">GET IT ON</span>
+                        Google Play
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Wedding App Interface">
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <h2>Everything you need for "I Do"</h2>
+        <div class="feature-grid">
+            
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fas fa-search-location"></i>
+                </div>
+                <h3>Discover Top Vendors</h3>
+                <p>Browse exclusive collections of venues, photographers, caterers, and planners. Find the perfect match for your style and budget.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h3>Smart Checklist</h3>
+                <p>Never miss a detail. Add custom tasks, drag and drop to reorder, and track your progress as your big day approaches.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="icon-wrapper">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h3>Real Reviews</h3>
+                <p>Read genuine experiences from other couples, and leave your own feedback to help the community make the best choices.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 MajlisHub. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
