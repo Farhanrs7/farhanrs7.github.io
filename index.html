@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MajlisHub - Your Dream Wedding</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-orange: #FF7E27;
             --primary-orange-hover: #E66A1F;
             --text-dark: #2D2926;
             --text-muted: #555555;
+            --bg-light: #FFFFFF;
         }
 
         * {
@@ -21,12 +22,9 @@
         }
 
         body {
-            /* The new soft rose-mauve to creamy peach background gradient */
             background: linear-gradient(135deg, #D4A5A5 0%, #FADCD2 40%, #FDF3EB 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
             color: var(--text-dark);
+            overflow-x: hidden;
         }
 
         /* --- NAVIGATION --- */
@@ -43,7 +41,7 @@
             gap: 12px;
             font-weight: 700;
             font-size: 24px;
-            color: white; /* Adjusted for contrast against the dark pink top */
+            color: var(--text-dark);
         }
 
         .logo-container img {
@@ -70,10 +68,9 @@
         /* --- HERO SECTION --- */
         .hero {
             display: flex;
-            flex: 1;
             align-items: center;
             justify-content: space-between;
-            padding: 40px 5%;
+            padding: 60px 5% 100px;
             gap: 40px;
         }
 
@@ -114,7 +111,7 @@
             color: white;
             text-decoration: none;
             padding: 12px 24px;
-            border-radius: 50px; /* Pill shape */
+            border-radius: 50px;
             font-weight: 600;
             transition: transform 0.2s ease, background-color 0.3s ease;
             box-shadow: 0 4px 15px rgba(255, 126, 39, 0.3);
@@ -146,7 +143,6 @@
             font-size: 16px;
         }
 
-        /* --- HERO IMAGE --- */
         .hero-image-wrapper {
             flex: 1;
             display: flex;
@@ -160,12 +156,79 @@
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
-        /* --- RESPONSIVE DESIGN FOR MOBILE --- */
+        /* --- APP SHOWCASE SECTION (NEW) --- */
+        .app-showcase {
+            background-color: var(--bg-light);
+            padding: 100px 5%;
+            text-align: center;
+            border-top-left-radius: 60px;
+            border-top-right-radius: 60px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.05);
+        }
+
+        .showcase-header h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+        }
+
+        .showcase-header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 60px;
+            line-height: 1.6;
+        }
+
+        .screenshot-grid {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .screenshot-card {
+            flex: 1;
+            min-width: 280px;
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Simulates a phone frame around your screenshots */
+        .screenshot-card img {
+            width: 100%;
+            border-radius: 32px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            border: 8px solid #F8F9FE; 
+            margin-bottom: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .screenshot-card:hover img {
+            transform: translateY(-10px);
+        }
+
+        .screenshot-card h3 {
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .screenshot-card p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            padding: 0 10px;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
         @media (max-width: 900px) {
             .hero {
                 flex-direction: column;
                 text-align: center;
-                padding-top: 20px;
+                padding-top: 40px;
             }
 
             .hero-content h1 {
@@ -179,7 +242,17 @@
 
             .hero-image-wrapper {
                 justify-content: center;
-                margin-top: 20px;
+                margin-top: 40px;
+            }
+            
+            .app-showcase {
+                border-top-left-radius: 40px;
+                border-top-right-radius: 40px;
+                padding: 60px 5%;
+            }
+
+            .showcase-header h2 {
+                font-size: 2rem;
             }
         }
     </style>
@@ -189,7 +262,7 @@
     <header>
         <div class="logo-container">
             <img src="assets/logo.png" alt="MajlisHub Logo">
-            <span style="color: #2D2926;">MajlisHub</span>
+            <span>MajlisHub</span>
         </div>
         <nav class="nav-links">
             <a href="#features">Features</a>
@@ -202,7 +275,7 @@
             <h1>Your Dream Wedding,<br>All in One Place.</h1>
             <p>Say goodbye to wedding stress. <span class="highlight">MajlisHub</span> is your ultimate companion to discover top-rated vendors, manage your smart checklist, and plan your big day flawlessly from your phone.</p>
             
-            <div class="store-buttons">
+            <div class="store-buttons" id="download">
                 <a href="#" class="store-btn">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple Logo">
                     <div class="btn-text">
@@ -210,7 +283,6 @@
                         <span>App Store</span>
                     </div>
                 </a>
-
                 <a href="#" class="store-btn">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" alt="Google Play Logo">
                     <div class="btn-text">
@@ -225,6 +297,33 @@
             <img src="assets/wedding-hero.jpg" alt="Couple celebrating their wedding with balloons">
         </div>
     </main>
+
+    <section class="app-showcase" id="features">
+        <div class="showcase-header">
+            <h2>Plan Your Perfect Day, Effortlessly.</h2>
+            <p>We've completely reimagined wedding planning. Explore thousands of trusted vendors, manage your countdown, and find endless inspiration—all beautifully organized in your pocket.</p>
+        </div>
+        
+        <div class="screenshot-grid">
+            <div class="screenshot-card">
+                <img src="assets/screen-home.png" alt="MajlisHub Smart Dashboard">
+                <h3>Smart Dashboard</h3>
+                <p>Stay on top of your wedding countdown and track your personalized checklist at a glance.</p>
+            </div>
+
+            <div class="screenshot-card">
+                <img src="assets/screen-vendors.png" alt="MajlisHub Vendor Search">
+                <h3>Top-Rated Vendors</h3>
+                <p>Browse venues, photographers, and makeup artists. Filter by location and budget instantly.</p>
+            </div>
+
+            <div class="screenshot-card">
+                <img src="assets/screen-ideas.png" alt="MajlisHub Inspiration Board">
+                <h3>Endless Inspiration</h3>
+                <p>Discover the latest wedding trends and save your favorite ideas straight to your mood board.</p>
+            </div>
+        </div>
+    </section>
 
 </body>
 </html>
