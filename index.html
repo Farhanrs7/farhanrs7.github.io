@@ -12,6 +12,8 @@
             --text-dark: #2D2926;
             --text-muted: #555555;
             --bg-light: #FFFFFF;
+            /* Reusing the soft light card color for the phone bezel to integrate nicely */
+            --phone-bezel: #F8F9FE; 
         }
 
         * {
@@ -143,20 +145,61 @@
             font-size: 16px;
         }
 
+        /* --- HERO IMAGE AREA (Updated to handle staggered phones) --- */
         .hero-image-wrapper {
             flex: 1;
             display: flex;
-            justify-content: flex-end;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        .hero-image-wrapper img {
-            max-width: 100%;
+        /* Container for the staggered phone cluster */
+        .hero-phones {
+            position: relative;
+            width: 450px;
+            height: 600px;
+            /* Add a subtle nudge to the right on desktop for balance against text */
+            transform: translateX(40px); 
+        }
+
+        /* Essential phone frame style */
+        .phone-mockup {
+            position: absolute;
+            background-color: var(--phone-bezel); /* Clean white/silver bezel */
+            border-radius: 44px; /* Matches modern smartphone curvature */
+            padding: 12px; /* Bezel width */
+            box-shadow: 0 25px 60px rgba(0,0,0,0.25); /* Deep shadow for 3D effect */
+            width: 260px; /* Base phone width */
+            overflow: hidden; /* Clips the image safely within the bezel */
+            border: 1px solid rgba(0,0,0,0.05); /* Soft border to define bezel against background */
+        }
+
+        .phone-mockup img {
+            width: 100%;
             height: auto;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-radius: 34px; /* Matches inner curvature */
+            display: block;
         }
 
-        /* --- APP SHOWCASE SECTION (NEW) --- */
+        /* Desktop Staggering Arrangement */
+
+        /* Business Screen sitting slightly back-left */
+        .business-phone {
+            top: 0;
+            left: 0;
+            z-index: 1; /* Sits behind */
+        }
+
+        /* Normal Screen sitting slightly front-right */
+        .normal-phone {
+            bottom: 0;
+            right: 0;
+            z-index: 2; /* Sits in front */
+        }
+
+
+        /* --- APP SHOWCASE SECTION --- */
         .app-showcase {
             background-color: var(--bg-light);
             padding: 100px 5%;
@@ -196,12 +239,12 @@
             align-items: center;
         }
 
-        /* Simulates a phone frame around your screenshots */
+        /* These screenshots reuse the bezel color for a unified look */
         .screenshot-card img {
             width: 100%;
             border-radius: 32px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-            border: 8px solid #F8F9FE; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            border: 8px solid var(--phone-bezel); 
             margin-bottom: 24px;
             transition: transform 0.3s ease;
         }
@@ -229,6 +272,7 @@
                 flex-direction: column;
                 text-align: center;
                 padding-top: 40px;
+                padding-bottom: 60px; /* Less space on mobile */
             }
 
             .hero-content h1 {
@@ -243,6 +287,31 @@
             .hero-image-wrapper {
                 justify-content: center;
                 margin-top: 40px;
+                position: static;
+                transform: none;
+            }
+
+            /* Stack phones neatly side-by-side on mobile */
+            .hero-phones {
+                position: static;
+                width: auto;
+                height: auto;
+                transform: none;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                padding: 20px 0;
+            }
+
+            .phone-mockup {
+                position: static; /* Remove desktop staggering */
+                width: 170px; /* Scaled down for mobile */
+                border-radius: 28px;
+                padding: 8px;
+            }
+
+            .phone-mockup img {
+                border-radius: 22px;
             }
             
             .app-showcase {
@@ -294,7 +363,17 @@
         </div>
 
         <div class="hero-image-wrapper">
-            <img src="assets/wedding-hero.jpg" alt="Couple celebrating their wedding with balloons">
+            <div class="hero-phones">
+                
+                <div class="phone-mockup business-phone">
+                    <img src="assets/screen_business.png" alt="MajlisHub Business Mode">
+                </div>
+
+                <div class="phone-mockup normal-phone">
+                    <img src="assets/screen_normal.png" alt="MajlisHub User Mode">
+                </div>
+                
+            </div>
         </div>
     </main>
 
@@ -310,13 +389,11 @@
                 <h3>Smart Dashboard</h3>
                 <p>Stay on top of your wedding countdown and track your personalized checklist at a glance.</p>
             </div>
-
             <div class="screenshot-card">
                 <img src="assets/screen-vendors.png" alt="MajlisHub Vendor Search">
                 <h3>Top-Rated Vendors</h3>
                 <p>Browse venues, photographers, and makeup artists. Filter by location and budget instantly.</p>
             </div>
-
             <div class="screenshot-card">
                 <img src="assets/screen-ideas.png" alt="MajlisHub Inspiration Board">
                 <h3>Endless Inspiration</h3>
