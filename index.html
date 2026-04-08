@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MajlisHub - Your Dream Wedding</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJCGGY7J5M"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -22,7 +21,6 @@
             --text-dark: #2D2926;
             --text-muted: #555555;
             --bg-light: #FFFFFF;
-            /* Reusing the soft light card color for the phone bezel to integrate nicely */
             --phone-bezel: #F8F9FE; 
         }
 
@@ -38,7 +36,6 @@
             color: var(--text-dark);
             overflow-x: hidden;
         }
-        
 
         /* --- NAVIGATION --- */
         header {
@@ -76,7 +73,6 @@
         }
 
         .logo-white {
-            /* This filter turns any non-transparent pixel pure white */
             filter: brightness(0) invert(1);
         }
 
@@ -117,10 +113,11 @@
             font-weight: 700;
         }
 
-        /* --- BUTTONS --- */
+        /* --- BUTTONS & HYPE METER --- */
         .store-buttons {
             display: flex;
             gap: 16px;
+            margin-bottom: 20px;
         }
 
         .store-btn {
@@ -134,6 +131,7 @@
             font-weight: 600;
             transition: transform 0.2s ease, background-color 0.3s ease;
             box-shadow: 0 4px 15px rgba(255, 126, 39, 0.3);
+            cursor: pointer;
         }
 
         .store-btn:hover {
@@ -162,7 +160,57 @@
             font-size: 16px;
         }
 
-        /* --- HERO IMAGE AREA (Updated to handle staggered phones) --- */
+        /* NEW: Hype Meter Styling */
+        .hype-meter {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 16px 20px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .hype-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hype-counters {
+            display: flex;
+            gap: 16px;
+        }
+
+        .counter-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Animation when the number updates */
+        .pop-animation {
+            transform: scale(1.1);
+            color: var(--primary-orange);
+        }
+
+        .counter-badge img {
+            height: 16px;
+            filter: invert(15%) sepia(10%) saturate(1412%) hue-rotate(334deg) brightness(96%) contrast(89%); /* Dark text color */
+        }
+
+        /* --- HERO IMAGE AREA --- */
         .hero-image-wrapper {
             flex: 1;
             display: flex;
@@ -171,16 +219,13 @@
             position: relative;
         }
 
-        /* Container for the staggered phone cluster */
         .hero-phones {
             position: relative;
             width: 450px;
             height: 600px;
-            /* Add a subtle nudge to the right on desktop for balance against text */
             transform: translateX(40px); 
         }
 
-        /* Essential phone frame style */
         .phone-mockup {
             position: absolute;
             background-color: #000000;
@@ -195,26 +240,21 @@
         .phone-mockup img {
             width: 100%;
             height: auto;
-            border-radius: 34px; /* Matches inner curvature */
+            border-radius: 34px; 
             display: block;
         }
 
-        /* Desktop Staggering Arrangement */
-
-        /* Business Screen sitting slightly back-left */
         .business-phone {
             top: 0;
             left: 0;
-            z-index: 1; /* Sits behind */
+            z-index: 1; 
         }
 
-        /* Normal Screen sitting slightly front-right */
         .normal-phone {
             bottom: 0;
             right: 0;
-            z-index: 2; /* Sits in front */
+            z-index: 2; 
         }
-
 
         /* --- APP SHOWCASE SECTION --- */
         .app-showcase {
@@ -256,7 +296,6 @@
             align-items: center;
         }
 
-        /* These screenshots reuse the bezel color for a unified look */
         .screenshot-card img {
             width: 100%;
             border-radius: 32px;
@@ -283,13 +322,80 @@
             padding: 0 10px;
         }
 
+        /* --- POPUP MODAL CSS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transform: translateY(30px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h3 {
+            color: var(--primary-orange);
+            font-size: 1.8rem;
+            margin-bottom: 16px;
+        }
+
+        .modal-content p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1rem;
+        }
+
+        .close-btn {
+            background-color: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background-color: var(--primary-orange);
+        }
+
         /* --- RESPONSIVE DESIGN --- */
         @media (max-width: 900px) {
             .hero {
                 flex-direction: column;
                 text-align: center;
                 padding-top: 40px;
-                padding-bottom: 60px; /* Less space on mobile */
+                padding-bottom: 60px;
             }
 
             .hero-content h1 {
@@ -308,7 +414,6 @@
                 transform: none;
             }
 
-            /* Stack phones neatly side-by-side on mobile */
             .hero-phones {
                 position: static;
                 width: auto;
@@ -321,24 +426,14 @@
             }
 
             .phone-mockup {
-                position: static; /* Remove desktop staggering */
-                width: 170px; /* Scaled down for mobile */
+                position: static; 
+                width: 170px; 
                 border-radius: 28px;
                 padding: 8px;
             }
 
             .phone-mockup img {
                 border-radius: 22px;
-            }
-            
-            .app-showcase {
-                border-top-left-radius: 40px;
-                border-top-right-radius: 40px;
-                padding: 60px 5%;
-            }
-
-            .showcase-header h2 {
-                font-size: 2rem;
             }
         }
     </style>
@@ -358,18 +453,18 @@
 
     <main class="hero">
         <div class="hero-content">
-            <h1>Your Dream Wedding,<br>All in One Place.</h1>
-            <p>Say goodbye to wedding stress. <span class="highlight">MajlisHub</span> is your ultimate companion to discover top-rated vendors, manage your smart checklist, and plan your big day flawlessly from your phone.</p>
+            <h1>Rancang Hari Bahagia Anda,<br>All in One Place.</h1>
+            <p>Say goodbye to wedding stress. <span class="highlight">MajlisHub</span> is Malaysia's ultimate companion to discover top-rated local vendors, manage your smart checklist, and plan your big day flawlessly from your phone. Jom rancang bersama!</p>
             
             <div class="store-buttons" id="download">
-                <a href="#" class="store-btn">
+                <a href="#" id="btn-ios" class="store-btn">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/3/31/Apple_logo_white.svg" alt="Apple Logo">
                     <div class="btn-text">
                         <span>Download on the</span>
                         <span>App Store</span>
                     </div>
                 </a>
-                <a href="#" class="store-btn">
+                <a href="#" id="btn-android" class="store-btn">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" alt="Google Play Logo">
                     <div class="btn-text">
                         <span>GET IT ON</span>
@@ -377,19 +472,31 @@
                     </div>
                 </a>
             </div>
+
+            <div class="hype-meter">
+                <div class="hype-title">🚀 Join the waitlist! Couples waiting for release:</div>
+                <div class="hype-counters">
+                    <div class="counter-badge" id="badge-ios">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" alt="Apple"> 
+                        <span id="count-ios">...</span>
+                    </div>
+                    <div class="counter-badge" id="badge-android">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" style="filter: none;" alt="Android"> 
+                        <span id="count-android">...</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div class="hero-image-wrapper">
             <div class="hero-phones">
-                
                 <div class="phone-mockup business-phone">
                     <img src="assets/screen_business.jpeg" alt="MajlisHub Business Mode">
                 </div>
-
                 <div class="phone-mockup normal-phone">
                     <img src="assets/screen_normal.jpeg" alt="MajlisHub User Mode">
                 </div>
-                
             </div>
         </div>
     </main>
@@ -419,5 +526,104 @@
         </div>
     </section>
 
+    <div class="modal-overlay" id="comingSoonModal">
+        <div class="modal-content">
+            <h3>Coming Soon! 🚀</h3>
+            <p>This app is currently a work in progress, but we will take your click as motivation to release it as soon as possible. Terima kasih atas sokongan anda!</p>
+            <button class="close-btn" id="close-modal-btn">Okay, I'll wait!</button>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // Import Firebase modules via CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // ⚠️ REPLACE THIS OBJECT WITH YOUR ACTUAL FIREBASE CONFIG FROM YOUR FLUTTER PROJECT!
+        const firebaseConfig = {
+          apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
+          authDomain: "wedmadegood.firebaseapp.com",
+          projectId: "wedmadegood",
+          storageBucket: "wedmadegood.firebasestorage.app",
+          messagingSenderId: "557493417789",
+          appId: "1:557493417789:web:461094e671d0b355aab754"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Reference to a specific document to hold our counts
+        const statsRef = doc(db, "website_stats", "downloads");
+
+        // UI Elements
+        const countIosLabel = document.getElementById('count-ios');
+        const countAndroidLabel = document.getElementById('count-android');
+        const badgeIos = document.getElementById('badge-ios');
+        const badgeAndroid = document.getElementById('badge-android');
+        const modal = document.getElementById('comingSoonModal');
+        const btnIos = document.getElementById('btn-ios');
+        const btnAndroid = document.getElementById('btn-android');
+        const btnCloseModal = document.getElementById('close-modal-btn');
+
+        // 1. Initialize Document if it doesn't exist
+        async function initStats() {
+            const docSnap = await getDoc(statsRef);
+            if (!docSnap.exists()) {
+                await setDoc(statsRef, { ios: 0, android: 0 });
+            }
+        }
+        initStats();
+
+        // 2. Listen for Real-Time Updates (Will update automatically if someone else clicks!)
+        onSnapshot(statsRef, (doc) => {
+            if (doc.exists()) {
+                const data = doc.data();
+                
+                // Animate the update
+                countIosLabel.innerText = data.ios || 0;
+                badgeIos.classList.add('pop-animation');
+                
+                countAndroidLabel.innerText = data.android || 0;
+                badgeAndroid.classList.add('pop-animation');
+
+                // Remove animation class after it plays
+                setTimeout(() => {
+                    badgeIos.classList.remove('pop-animation');
+                    badgeAndroid.classList.remove('pop-animation');
+                }, 300);
+            }
+        });
+
+        // 3. Handle Button Clicks
+        async function trackClick(platform, event) {
+            event.preventDefault(); // Stop page scrolling to top
+            
+            // Show modal immediately so user isn't waiting on database
+            modal.classList.add('active'); 
+
+            // Increment the counter in Firestore safely
+            try {
+                if (platform === 'ios') {
+                    await updateDoc(statsRef, { ios: increment(1) });
+                } else {
+                    await updateDoc(statsRef, { android: increment(1) });
+                }
+            } catch (error) {
+                console.error("Error updating stats:", error);
+            }
+        }
+
+        // Attach listeners
+        btnIos.addEventListener('click', (e) => trackClick('ios', e));
+        btnAndroid.addEventListener('click', (e) => trackClick('android', e));
+
+        // Close modal listeners
+        btnCloseModal.addEventListener('click', () => modal.classList.remove('active'));
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+    </script>
 </body>
 </html>
