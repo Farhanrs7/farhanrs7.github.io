@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Account | MajlisHub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-orange: #FF7E27;
+            --primary-orange-hover: #E66A1F;
+            --text-dark: #2D2926;
+            --text-muted: #555555;
+            --bg-light: #FFFFFF;
+            --danger-red: #E53935;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #D4A5A5 0%, #FADCD2 40%, #FDF3EB 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 5%;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--text-dark);
+            text-decoration: none;
+        }
+
+        .logo-container img {
+            height: 40px;
+            margin-bottom: 14px;
+            filter: brightness(0) invert(1);
+        }
+
+        /* --- CONTENT CONTAINER --- */
+        .content-container {
+            flex: 1;
+            padding: 40px 5% 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: var(--bg-light);
+            padding: 50px;
+            border-radius: 32px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .icon-warning {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .card h1 {
+            color: var(--text-dark);
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 24px;
+            font-size: 1.05rem;
+        }
+
+        .data-list {
+            text-align: left;
+            background: #F8F9FE;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .data-list h4 {
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .data-list ul {
+            list-style-type: none;
+            color: var(--text-muted);
+        }
+
+        .data-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-list li::before {
+            content: "•";
+            color: var(--danger-red);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* --- BUTTONS --- */
+        .btn-delete {
+            display: inline-block;
+            background-color: var(--danger-red);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 15px rgba(229, 57, 53, 0.3);
+            width: 100%;
+            margin-bottom: 16px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-delete:hover {
+            background-color: #C62828;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            display: inline-block;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px;
+            transition: color 0.3s;
+        }
+
+        .btn-cancel:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: transparent;
+            padding: 20px 5% 40px;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            color: #777;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                padding: 30px 20px;
+                border-radius: 24px;
+            }
+            .card h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="/" class="logo-container">
+            <img src="assets/MajlisHubLogoSVG.svg" alt="MajlisHub Logo">
+            <span>MajlisHub</span>
+        </a>
+    </header>
+
+    <main class="content-container">
+        <div class="card">
+            <div class="icon-warning">⚠️</div>
+            <h1>Delete Your Account</h1>
+            <p>We are sad to see you go! If you no longer need your MajlisHub account, you can request to have your account and associated data permanently deleted.</p>
+            
+            <div class="data-list">
+                <h4>What will be deleted?</h4>
+                <ul>
+                    <li>Your profile information (Name, Email, Phone)</li>
+                    <li>Your saved wedding inspiration boards</li>
+                    <li>Your vendor inquiries and chats</li>
+                    <li>If you are a vendor: All your listings, images, and reviews</li>
+                </ul>
+            </div>
+
+            <p><strong>Note:</strong> This process is irreversible. Once your data is deleted, it cannot be recovered.</p>
+
+            <!-- Clicking this will open their default email app pre-filled with the request -->
+            <button class="btn-delete" onclick="sendDeletionEmail()">Request Account Deletion</button>
+            
+            <br>
+            <a href="/" class="btn-cancel">Cancel and Return Home</a>
+        </div>
+    </main>
+
+    <footer>
+        <p class="footer-copyright">&copy; 2026 MajlisHub. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function sendDeletionEmail() {
+            // Replace with your actual support email
+            const supportEmail = "support@majlishub.my"; 
+            const subject = encodeURIComponent("Account Deletion Request - MajlisHub");
+            const body = encodeURIComponent(
+                "Hello MajlisHub Support,\n\n" +
+                "I would like to request the permanent deletion of my account and all associated data.\n\n" +
+                "Here are my details to verify my account:\n" +
+                "- Registered Email Address: [Please type your registered email here]\n" +
+                "- Registered Phone Number (if applicable): [Please type your phone number here]\n\n" +
+                "Please confirm once my data has been removed.\n\n" +
+                "Thank you."
+            );
+            
+            window.location.href = `mailto:${supportEmail}?subject=${subject}&body=${body}`;
+        }
+    </script>
+
+</body>
+</html>
