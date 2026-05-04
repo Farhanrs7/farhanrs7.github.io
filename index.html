@@ -4,10 +4,10 @@
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MajlisHub - Your Dream Wedding</title>
+    <title>MajlisHub | Find Top Wedding Vendors in Malaysia</title>
     <meta name="description" content="Discover top-rated wedding vendors in Malaysia. MajlisHub helps you find photographers, venues, and makeup artists to plan your perfect Malay wedding.">
     <meta name="keywords" content="wedding vendor Malaysia, perkahwinan, jurugambar perkahwinan, pelamin, wedding planner KL, Malay wedding">
-    <title>MajlisHub | Find Top Wedding Vendors in Malaysia</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-WJCGGY7J5M"></script>
     <script>
@@ -163,7 +163,6 @@
             font-size: 16px;
         }
 
-        /* NEW: Hype Meter Styling */
         .hype-meter {
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
@@ -202,7 +201,6 @@
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* Animation when the number updates */
         .pop-animation {
             transform: scale(1.1);
             color: var(--primary-orange);
@@ -210,7 +208,7 @@
 
         .counter-badge img {
             height: 16px;
-            filter: invert(15%) sepia(10%) saturate(1412%) hue-rotate(334deg) brightness(96%) contrast(89%); /* Dark text color */
+            filter: invert(15%) sepia(10%) saturate(1412%) hue-rotate(334deg) brightness(96%) contrast(89%);
         }
 
         /* --- HERO IMAGE AREA --- */
@@ -262,7 +260,7 @@
         /* --- APP SHOWCASE SECTION --- */
         .app-showcase {
             background-color: var(--bg-light);
-            padding: 100px 5%;
+            padding: 100px 5% 60px;
             text-align: center;
             border-top-left-radius: 60px;
             border-top-right-radius: 60px;
@@ -323,6 +321,34 @@
             color: var(--text-muted);
             line-height: 1.5;
             padding: 0 10px;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--bg-light);
+            padding: 20px 5% 40px;
+            text-align: center;
+        }
+
+        .footer-links {
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            margin: 0 15px;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-orange);
+        }
+
+        .footer-copyright {
+            color: #999;
+            font-size: 0.9rem;
         }
 
         /* --- POPUP MODAL CSS --- */
@@ -529,6 +555,15 @@
         </div>
     </section>
 
+    <!-- NEW FOOTER ADDED HERE -->
+    <footer>
+        <div class="footer-links">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="mailto:support@majlishub.my">Contact Us</a>
+        </div>
+        <p class="footer-copyright">&copy; 2026 MajlisHub. All rights reserved.</p>
+    </footer>
+
     <div class="modal-overlay" id="comingSoonModal">
         <div class="modal-content">
             <h3>Coming Soon! 🚀</h3>
@@ -539,11 +574,9 @@
 
 
     <script type="module">
-        // Import Firebase modules via CDN
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ⚠️ REPLACE THIS OBJECT WITH YOUR ACTUAL FIREBASE CONFIG FROM YOUR FLUTTER PROJECT!
         const firebaseConfig = {
           apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
           authDomain: "wedmadegood.firebaseapp.com",
@@ -553,14 +586,10 @@
           appId: "1:557493417789:web:461094e671d0b355aab754"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // Reference to a specific document to hold our counts
         const statsRef = doc(db, "website_stats", "downloads");
 
-        // UI Elements
         const countIosLabel = document.getElementById('count-ios');
         const countAndroidLabel = document.getElementById('count-android');
         const badgeIos = document.getElementById('badge-ios');
@@ -570,7 +599,6 @@
         const btnAndroid = document.getElementById('btn-android');
         const btnCloseModal = document.getElementById('close-modal-btn');
 
-        // 1. Initialize Document if it doesn't exist
         async function initStats() {
             const docSnap = await getDoc(statsRef);
             if (!docSnap.exists()) {
@@ -579,19 +607,16 @@
         }
         initStats();
 
-        // 2. Listen for Real-Time Updates (Will update automatically if someone else clicks!)
         onSnapshot(statsRef, (doc) => {
             if (doc.exists()) {
                 const data = doc.data();
                 
-                // Animate the update
                 countIosLabel.innerText = data.ios || 0;
                 badgeIos.classList.add('pop-animation');
                 
                 countAndroidLabel.innerText = data.android || 0;
                 badgeAndroid.classList.add('pop-animation');
 
-                // Remove animation class after it plays
                 setTimeout(() => {
                     badgeIos.classList.remove('pop-animation');
                     badgeAndroid.classList.remove('pop-animation');
@@ -599,14 +624,10 @@
             }
         });
 
-        // 3. Handle Button Clicks
         async function trackClick(platform, event) {
-            event.preventDefault(); // Stop page scrolling to top
-            
-            // Show modal immediately so user isn't waiting on database
+            event.preventDefault(); 
             modal.classList.add('active'); 
 
-            // Increment the counter in Firestore safely
             try {
                 if (platform === 'ios') {
                     await updateDoc(statsRef, { ios: increment(1) });
@@ -618,11 +639,9 @@
             }
         }
 
-        // Attach listeners
         btnIos.addEventListener('click', (e) => trackClick('ios', e));
         btnAndroid.addEventListener('click', (e) => trackClick('android', e));
 
-        // Close modal listeners
         btnCloseModal.addEventListener('click', () => modal.classList.remove('active'));
         window.addEventListener('click', (e) => {
             if (e.target === modal) modal.classList.remove('active');
