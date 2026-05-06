@@ -370,16 +370,15 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            // Disable button to prevent double submission
             submitBtn.disabled = true;
             submitBtn.innerText = "Submitting...";
-
+        
             const email = document.getElementById('email').value;
             const category = document.getElementById('category').value;
             const description = document.getElementById('description').value;
-
+        
             try {
-                // Add document to the "tickets" collection
+                // Step 1: Save to your Firestore (for your own database records)
                 await addDoc(collection(db, "tickets"), {
                     email: email,
                     category: category,
@@ -388,21 +387,31 @@
                     status: "open",
                     createdAt: serverTimestamp()
                 });
-
-                // Show success modal
+        
+                // Step 2: Push to Make.com (to trigger the GitHub Issue)
+                // REPLACE THE URL BELOW WITH YOUR COPIED WEBHOOK URL
+                await fetch("https://hook.us1.make.com/YOUR_UNIQUE_CODE_HERE", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: email,
+                        category: category,
+                        description: description,
+                        source: "website"
+                    })
+                });
+        
                 modal.classList.add('active');
                 form.reset();
                 
             } catch (error) {
-                console.error("Error adding document: ", error);
-                alert("Something went wrong. Please try again later.");
+                console.error("Error:", error);
+                alert("Something went wrong. Please try again.");
             } finally {
-                // Reset button state
                 submitBtn.disabled = false;
                 submitBtn.innerText = "Submit Ticket";
             }
         });
-
         // Modal Close Logic
         closeModalBtn.addEventListener('click', () => {
             modal.classList.remove('active');
