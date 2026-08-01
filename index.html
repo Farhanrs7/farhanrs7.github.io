@@ -579,79 +579,109 @@
     </div>
 
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, setDoc, updateDoc, increment, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
-          authDomain: "wedmadegood.firebaseapp.com",
-          projectId: "wedmadegood",
-          storageBucket: "wedmadegood.firebasestorage.app",
-          messagingSenderId: "557493417789",
-          appId: "1:557493417789:web:461094e671d0b355aab754"
-        };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
+      authDomain: "wedmadegood.firebaseapp.com",
+      projectId: "wedmadegood",
+      storageBucket: "wedmadegood.firebasestorage.app",
+      messagingSenderId: "557493417789",
+      appId: "1:557493417789:web:461094e671d0b355aab754"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const statsRef = doc(db, "website_stats", "downloads");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    
+    // References
+    const statsRef = doc(db, "website_stats", "downloads");
+    const appInfoRef = doc(db, "app_info", "details");
 
-        const countIosLabel = document.getElementById('count-ios');
-        const countAndroidLabel = document.getElementById('count-android');
-        const badgeIos = document.getElementById('badge-ios');
-        const badgeAndroid = document.getElementById('badge-android');
-        const modal = document.getElementById('comingSoonModal');
-        const btnIos = document.getElementById('btn-ios');
-        const btnAndroid = document.getElementById('btn-android');
-        const btnCloseModal = document.getElementById('close-modal-btn');
+    const countIosLabel = document.getElementById('count-ios');
+    const countAndroidLabel = document.getElementById('count-android');
+    const badgeIos = document.getElementById('badge-ios');
+    const badgeAndroid = document.getElementById('badge-android');
+    const modal = document.getElementById('comingSoonModal');
+    const btnIos = document.getElementById('btn-ios');
+    const btnAndroid = document.getElementById('btn-android');
+    const btnCloseModal = document.getElementById('close-modal-btn');
 
-        async function initStats() {
-            const docSnap = await getDoc(statsRef);
-            if (!docSnap.exists()) {
-                await setDoc(statsRef, { ios: 0, android: 0 });
-            }
+    // Initialize stats document if missing
+    async function initStats() {
+        const docSnap = await getDoc(statsRef);
+        if (!docSnap.exists()) {
+            await setDoc(statsRef, { ios: 0, android: 0 });
         }
-        initStats();
+    }
+    initStats();
 
-        onSnapshot(statsRef, (doc) => {
-            if (doc.exists()) {
-                const data = doc.data();
-                
-                countIosLabel.innerText = data.ios || 0;
-                badgeIos.classList.add('pop-animation');
-                
-                countAndroidLabel.innerText = data.android || 0;
-                badgeAndroid.classList.add('pop-animation');
+    // Listen for real-time count updates
+    onSnapshot(statsRef, (doc) => {
+        if (doc.exists()) {
+            const data = doc.data();
+            
+            countIosLabel.innerText = data.ios || 0;
+            badgeIos.classList.add('pop-animation');
+            
+            countAndroidLabel.innerText = data.android || 0;
+            badgeAndroid.classList.add('pop-animation');
 
-                setTimeout(() => {
-                    badgeIos.classList.remove('pop-animation');
-                    badgeAndroid.classList.remove('pop-animation');
-                }, 300);
-            }
-        });
+            setTimeout(() => {
+                badgeIos.classList.remove('pop-animation');
+                badgeAndroid.classList.remove('pop-animation');
+            }, 300);
+        }
+    });
 
-        async function trackClick(platform, event) {
-            event.preventDefault(); 
-            modal.classList.add('active'); 
+    // Handle button click, increment stats, and redirect to store URL
+    async function trackClickAndRedirect(platform, event) {
+        event.preventDefault(); 
 
-            try {
-                if (platform === 'ios') {
-                    await updateDoc(statsRef, { ios: increment(1) });
-                } else {
-                    await updateDoc(statsRef, { android: increment(1) });
+        try {
+            // 1. Fetch store ID from Firestore
+            const appInfoSnap = await getDoc(appInfoRef);
+            let redirectUrl = null;
+
+            if (appInfoSnap.exists()) {
+                const infoData = appInfoSnap.data();
+
+                if (platform === 'ios' && infoData.app_store_id) {
+                    redirectUrl = `https://apps.apple.com/app/id${infoData.app_store_id}`;
+                } else if (platform === 'android' && infoData.play_store_id) {
+                    redirectUrl = `https://play.google.com/store/apps/details?id=${infoData.play_store_id}`;
                 }
-            } catch (error) {
-                console.error("Error updating stats:", error);
             }
+
+            // 2. Increment the download stats
+            if (platform === 'ios') {
+                await updateDoc(statsRef, { ios: increment(1) });
+            } else {
+                await updateDoc(statsRef, { android: increment(1) });
+            }
+
+            // 3. Redirect to store or show "Coming Soon" modal if ID/URL is missing
+            if (redirectUrl) {
+                window.location.href = redirectUrl;
+            } else {
+                modal.classList.add('active');
+            }
+
+        } catch (error) {
+            console.error("Error updating stats or getting store link:", error);
+            // Fallback: show modal if an error occurs
+            modal.classList.add('active');
         }
+    }
 
-        btnIos.addEventListener('click', (e) => trackClick('ios', e));
-        btnAndroid.addEventListener('click', (e) => trackClick('android', e));
+    btnIos.addEventListener('click', (e) => trackClickAndRedirect('ios', e));
+    btnAndroid.addEventListener('click', (e) => trackClickAndRedirect('android', e));
 
-        btnCloseModal.addEventListener('click', () => modal.classList.remove('active'));
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) modal.classList.remove('active');
-        });
-    </script>
+    btnCloseModal.addEventListener('click', () => modal.classList.remove('active'));
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('active');
+    });
+</script>
 </body>
 </html>
