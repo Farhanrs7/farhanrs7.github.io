@@ -213,8 +213,18 @@
                     document.getElementById('row-venue').classList.add('hidden');
                 }
 
-                // Render Dynamic Custom Fields
-                activeFormFields = data.formFields || [];
+                // Combine all field arrays from Firestore document (defaultFields, formFields, customFields)
+                const fieldsList = [];
+                if (Array.isArray(data.defaultFields)) fieldsList.push(...data.defaultFields);
+                if (Array.isArray(data.formFields)) fieldsList.push(...data.formFields);
+                if (Array.isArray(data.customFields)) fieldsList.push(...data.customFields);
+
+                // Filter out standard fields already handled at top level (e.g. name, pax, status/attending)
+                activeFormFields = fieldsList.filter(field => {
+                    const fname = (field.name || '').toLowerCase();
+                    return fname !== 'name' && fname !== 'pax' && fname !== 'status';
+                });
+
                 renderDynamicFields(activeFormFields);
 
                 // Switch UI Views
@@ -279,10 +289,11 @@
 
             } else {
                 const input = document.createElement('input');
-                input.type = field.type || 'text';
+                input.type = field.type === 'phone' ? 'tel' : (field.type || 'text');
                 input.className = 'form-control';
                 input.id = fieldId;
                 input.name = field.name;
+                if (field.type === 'phone') input.placeholder = 'e.g. 0123456789';
                 if (field.required) input.required = true;
                 group.appendChild(input);
             }
