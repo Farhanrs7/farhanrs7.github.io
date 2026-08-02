@@ -18,7 +18,7 @@
 }
 
 body {
-    background: linear-gradient(135deg, #D4A5A5 0%, #FADCD2 40%, #FDF3EB 100%);
+    background: linear-gradient(135deg, #C5A059 0%, #E6C875 40%, #FDF8EC 100%);
     color: var(--text-dark);
     overflow-x: hidden;
     min-height: 100vh;
