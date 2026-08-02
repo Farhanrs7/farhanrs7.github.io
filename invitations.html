@@ -398,222 +398,219 @@
         <p class="footer-copyright">&copy; 2026 MajlisHub. All rights reserved.</p>
     </footer>
 
-    <!-- FIREBASE MODULE LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+<!-- FIREBASE MODULE LOGIC -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
-            authDomain: "wedmadegood.firebaseapp.com",
-            projectId: "wedmadegood",
-            storageBucket: "wedmadegood.firebasestorage.app",
-            messagingSenderId: "557493417789",
-            appId: "1:557493417789:web:461094e671d0b355aab754"
-        };
+    const firebaseConfig = {
+        apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
+        authDomain: "wedmadegood.firebaseapp.com",
+        projectId: "wedmadegood",
+        storageBucket: "wedmadegood.firebasestorage.app",
+        messagingSenderId: "557493417789",
+        appId: "1:557493417789:web:461094e671d0b355aab754"
+    };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        // UI DOM Elements
-        const cardLookup = document.getElementById('card-lookup');
-        const cardRsvp = document.getElementById('card-rsvp');
-        const cardSuccess = document.getElementById('card-success');
-        
-        const formLookup = document.getElementById('form-lookup');
-        const formRsvp = document.getElementById('form-rsvp');
-        const inputId = document.getElementById('invitation-id');
-        
-        const lookupError = document.getElementById('lookup-error');
-        const rsvpError = document.getElementById('rsvp-error');
-        
-        const dynamicContainer = document.getElementById('dynamic-fields-container');
-        
-        let activeInvitationId = null;
-        let activeFormFields = [];
+    // UI DOM Elements
+    const cardLookup = document.getElementById('card-lookup');
+    const cardRsvp = document.getElementById('card-rsvp');
+    const cardSuccess = document.getElementById('card-success');
+    
+    const formLookup = document.getElementById('form-lookup');
+    const formRsvp = document.getElementById('form-rsvp');
+    const inputId = document.getElementById('invitation-id');
+    
+    const lookupError = document.getElementById('lookup-error');
+    const rsvpError = document.getElementById('rsvp-error');
+    
+    const dynamicContainer = document.getElementById('dynamic-fields-container');
+    
+    let activeInvitationId = null;
+    let activeFormFields = [];
 
-        // Check URL for pre-filled invitation ID (e.g., /invitations/?id=INV-101)
-        // Automatically extract invitation ID from URL path or query params
-        window.addEventListener('DOMContentLoaded', () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            let idFromUrl = urlParams.get('id') || urlParams.get('code');
-        
-            // If no query parameter, check if ID is embedded in path (/invitations/INV-123)
-            if (!idFromUrl) {
-                const pathSegments = window.location.pathname.split('/').filter(Boolean);
-                // If path is like /invitations/INV-8821, the 2nd segment is the ID
-                if (pathSegments.length >= 2 && pathSegments[0] === 'invitations') {
-                    idFromUrl = decodeURIComponent(pathSegments[1]);
-                }
-            }
-        
-            if (idFromUrl) {
-                inputId.value = idFromUrl;
-                loadInvitation(idFromUrl);
-            }
-        });
+    // Automatically extract invitation ID from query string: ?id=[id] or ?code=[id]
+    window.addEventListener('DOMContentLoaded', () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const idFromUrl = urlParams.get('id') || urlParams.get('code');
 
-        // Step 1: Lookup Invitation
-        formLookup.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const invId = inputId.value.trim();
-            if (invId) {
-                await loadInvitation(invId);
-            }
-        });
-
-        async function loadInvitation(invId) {
-            lookupError.classList.add('hidden');
-            const btn = document.getElementById('btn-lookup');
-            btn.disabled = true;
-            btn.innerText = "Searching...";
-
-            try {
-                const invRef = doc(db, "invitations", invId);
-                const invSnap = await getDoc(invRef);
-
-                if (invSnap.exists()) {
-                    activeInvitationId = invId;
-                    const data = invSnap.data();
-                    
-                    // Render Invitation Header Data
-                    if (data.title) document.getElementById('inv-title').innerText = data.title;
-                    if (data.subtitle) document.getElementById('inv-subtitle').innerText = data.subtitle;
-                    if (data.date) document.getElementById('inv-date').innerText = data.date;
-                    else document.getElementById('row-date').classList.add('hidden');
-                    
-                    if (data.venue) document.getElementById('inv-venue').innerText = data.venue;
-                    else document.getElementById('row-venue').classList.add('hidden');
-
-                    // Render Custom Form Fields
-                    activeFormFields = data.formFields || [];
-                    renderDynamicFields(activeFormFields);
-
-                    // Switch Cards
-                    cardLookup.classList.add('hidden');
-                    cardRsvp.classList.remove('hidden');
-                } else {
-                    lookupError.innerText = "Invitation not found. Please double-check your code.";
-                    lookupError.classList.remove('hidden');
-                }
-            } catch (err) {
-                console.error("Error fetching invitation:", err);
-                lookupError.innerText = "An error occurred while loading your invitation. Please try again.";
-                lookupError.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "View Invitation";
-            }
+        if (idFromUrl) {
+            inputId.value = idFromUrl.trim();
+            loadInvitation(idFromUrl.trim());
         }
+    });
 
-        // Render Dynamic Fields from Firestore array
-        function renderDynamicFields(fields) {
-            dynamicContainer.innerHTML = ''; // Clear previous
+    // Step 1: Manual Lookup Fallback
+    formLookup.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const invId = inputId.value.trim();
+        if (invId) {
+            // Update the URL in browser address bar without reloading
+            const newUrl = `${window.location.pathname}?id=${encodeURIComponent(invId)}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
 
-            fields.forEach((field, index) => {
-                const group = document.createElement('div');
-                group.className = 'form-group';
+            await loadInvitation(invId);
+        }
+    });
 
-                const label = document.createElement('label');
-                label.innerHTML = `${field.label || field.name} ${field.required ? '<span class="required">*</span>' : ''}`;
-                group.appendChild(label);
+    async function loadInvitation(invId) {
+        lookupError.classList.add('hidden');
+        const btn = document.getElementById('btn-lookup');
+        btn.disabled = true;
+        btn.innerText = "Searching...";
 
-                const fieldId = `dynamic_field_${index}`;
+        try {
+            const invRef = doc(db, "invitations", invId);
+            const invSnap = await getDoc(invRef);
+
+            if (invSnap.exists()) {
+                activeInvitationId = invId;
+                const data = invSnap.data();
                 
-                if (field.type === 'dropdown') {
-                    const select = document.createElement('select');
-                    select.className = 'form-control';
-                    select.id = fieldId;
-                    select.name = field.name;
-                    if (field.required) select.required = true;
-
-                    // Placeholder option
-                    const defaultOpt = document.createElement('option');
-                    defaultOpt.value = '';
-                    defaultOpt.innerText = `-- Select ${field.label || field.name} --`;
-                    select.appendChild(defaultOpt);
-
-                    (field.options || []).forEach(opt => {
-                        const option = document.createElement('option');
-                        option.value = opt;
-                        option.innerText = opt;
-                        select.appendChild(option);
-                    });
-                    group.appendChild(select);
-
-                } else if (field.type === 'textarea') {
-                    const textarea = document.createElement('textarea');
-                    textarea.className = 'form-control';
-                    textarea.id = fieldId;
-                    textarea.name = field.name;
-                    textarea.rows = 3;
-                    if (field.required) textarea.required = true;
-                    group.appendChild(textarea);
-
+                // Render Header Details
+                if (data.title) document.getElementById('inv-title').innerText = data.title;
+                if (data.subtitle) document.getElementById('inv-subtitle').innerText = data.subtitle;
+                
+                if (data.date) {
+                    document.getElementById('inv-date').innerText = data.date;
+                    document.getElementById('row-date').classList.remove('hidden');
                 } else {
-                    // Default to standard input (text, number, date, etc.)
-                    const input = document.createElement('input');
-                    input.type = field.type || 'text';
-                    input.className = 'form-control';
-                    input.id = fieldId;
-                    input.name = field.name;
-                    if (field.required) input.required = true;
-                    group.appendChild(input);
+                    document.getElementById('row-date').classList.add('hidden');
+                }
+                
+                if (data.venue) {
+                    document.getElementById('inv-venue').innerText = data.venue;
+                    document.getElementById('row-venue').classList.remove('hidden');
+                } else {
+                    document.getElementById('row-venue').classList.add('hidden');
                 }
 
-                dynamicContainer.appendChild(group);
-            });
-        }
+                // Render Dynamic Custom Fields
+                activeFormFields = data.formFields || [];
+                renderDynamicFields(activeFormFields);
 
-        // Step 2: Submit RSVP Response
-        formRsvp.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            rsvpError.classList.add('hidden');
-            
-            const btnSubmit = document.getElementById('btn-submit-rsvp');
-            btnSubmit.disabled = true;
-            btnSubmit.innerText = "Submitting...";
-
-            try {
-                const attending = document.querySelector('input[name="attending"]:checked').value;
-                const name = document.getElementById('guest-name').value.trim();
-                const pax = parseInt(document.getElementById('guest-pax').value, 10) || 1;
-
-                // Collect Dynamic Field Data
-                const customResponses = {};
-                activeFormFields.forEach((field, index) => {
-                    const element = document.getElementById(`dynamic_field_${index}`);
-                    if (element) {
-                        customResponses[field.name] = element.value;
-                    }
-                });
-
-                // Payload
-                const responsePayload = {
-                    name: name,
-                    attending: attending,
-                    pax: attending === 'Yes' ? pax : 0,
-                    customResponses: customResponses,
-                    submittedAt: serverTimestamp()
-                };
-
-                // Store in Firestore subcollection: invitations -> {id} -> responses
-                const responsesRef = collection(db, "invitations", activeInvitationId, "responses");
-                await addDoc(responsesRef, responsePayload);
-
-                // Show Success Screen
-                cardRsvp.classList.add('hidden');
-                cardSuccess.classList.remove('hidden');
-
-            } catch (err) {
-                console.error("Error submitting RSVP:", err);
-                rsvpError.innerText = "Failed to submit RSVP. Please try again.";
-                rsvpError.classList.remove('hidden');
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerText = "Confirm RSVP";
+                // Switch UI Views
+                cardLookup.classList.add('hidden');
+                cardRsvp.classList.remove('hidden');
+            } else {
+                lookupError.innerText = "Invitation not found. Please double-check your code.";
+                lookupError.classList.remove('hidden');
             }
+        } catch (err) {
+            console.error("Error fetching invitation:", err);
+            lookupError.innerText = "An error occurred while loading your invitation. Please try again.";
+            lookupError.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "View Invitation";
+        }
+    }
+
+    // Dynamic Form Builder
+    function renderDynamicFields(fields) {
+        dynamicContainer.innerHTML = '';
+
+        fields.forEach((field, index) => {
+            const group = document.createElement('div');
+            group.className = 'form-group';
+
+            const label = document.createElement('label');
+            label.innerHTML = `${field.label || field.name} ${field.required ? '<span class="required">*</span>' : ''}`;
+            group.appendChild(label);
+
+            const fieldId = `dynamic_field_${index}`;
+            
+            if (field.type === 'dropdown') {
+                const select = document.createElement('select');
+                select.className = 'form-control';
+                select.id = fieldId;
+                select.name = field.name;
+                if (field.required) select.required = true;
+
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.innerText = `-- Select ${field.label || field.name} --`;
+                select.appendChild(defaultOpt);
+
+                (field.options || []).forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt;
+                    option.innerText = opt;
+                    select.appendChild(option);
+                });
+                group.appendChild(select);
+
+            } else if (field.type === 'textarea') {
+                const textarea = document.createElement('textarea');
+                textarea.className = 'form-control';
+                textarea.id = fieldId;
+                textarea.name = field.name;
+                textarea.rows = 3;
+                if (field.required) textarea.required = true;
+                group.appendChild(textarea);
+
+            } else {
+                const input = document.createElement('input');
+                input.type = field.type || 'text';
+                input.className = 'form-control';
+                input.id = fieldId;
+                input.name = field.name;
+                if (field.required) input.required = true;
+                group.appendChild(input);
+            }
+
+            dynamicContainer.appendChild(group);
         });
-    </script>
+    }
+
+    // Step 2: Submit RSVP
+    formRsvp.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        rsvpError.classList.add('hidden');
+        
+        const btnSubmit = document.getElementById('btn-submit-rsvp');
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = "Submitting...";
+
+        try {
+            const attending = document.querySelector('input[name="attending"]:checked').value;
+            const name = document.getElementById('guest-name').value.trim();
+            const pax = parseInt(document.getElementById('guest-pax').value, 10) || 1;
+
+            const customResponses = {};
+            activeFormFields.forEach((field, index) => {
+                const element = document.getElementById(`dynamic_field_${index}`);
+                if (element) {
+                    customResponses[field.name] = element.value;
+                }
+            });
+
+            const responsePayload = {
+                name: name,
+                attending: attending,
+                pax: attending === 'Yes' ? pax : 0,
+                customResponses: customResponses,
+                submittedAt: serverTimestamp()
+            };
+
+            const responsesRef = collection(db, "invitations", activeInvitationId, "responses");
+            await addDoc(responsesRef, responsePayload);
+
+            cardRsvp.classList.add('hidden');
+            cardSuccess.classList.remove('hidden');
+
+        } catch (err) {
+            console.error("Error submitting RSVP:", err);
+            rsvpError.innerText = "Failed to submit RSVP. Please try again.";
+            rsvpError.classList.remove('hidden');
+        } finally {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "Confirm RSVP";
+        }
+    });
+</script>
 </body>
 </html>
