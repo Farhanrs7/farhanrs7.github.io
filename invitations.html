@@ -76,6 +76,10 @@
                             <div class="tile-content">Joyfully Accept</div>
                         </label>
                         <label class="radio-tile">
+                            <input type="radio" name="attending" value="Maybe">
+                            <div class="tile-content">Not Sure</div>
+                        </label>
+                        <label class="radio-tile">
                             <input type="radio" name="attending" value="No">
                             <div class="tile-content">Regretfully Decline</div>
                         </label>
@@ -86,6 +90,12 @@
                 <div class="form-group">
                     <label for="guest-name">Full Name <span class="required">*</span></label>
                     <input type="text" id="guest-name" class="form-control" placeholder="Your full name" required>
+                </div>
+
+                <!-- Standard Phone Number Field -->
+                <div class="form-group">
+                    <label for="guest-phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="guest-phone" class="form-control" placeholder="e.g. 0123456789" required>
                 </div>
 
                 <!-- Standard PAX Field -->
@@ -287,6 +297,19 @@
         });
     }
 
+    // Toggle PAX input visibility based on attendance choice
+    const attendingRadios = document.querySelectorAll('input[name="attending"]');
+    const paxGroup = document.getElementById('pax-group');
+    attendingRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'No') {
+                paxGroup.classList.add('hidden');
+            } else {
+                paxGroup.classList.remove('hidden');
+            }
+        });
+    });
+
     // Step 2: Submit RSVP
     formRsvp.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -299,6 +322,7 @@
         try {
             const attending = document.querySelector('input[name="attending"]:checked').value;
             const name = document.getElementById('guest-name').value.trim();
+            const phone = document.getElementById('guest-phone').value.trim();
             const pax = parseInt(document.getElementById('guest-pax').value, 10) || 1;
 
             const customResponses = {};
@@ -311,8 +335,9 @@
 
             const responsePayload = {
                 name: name,
+                phone: phone,
                 attending: attending,
-                pax: attending === 'Yes' ? pax : 0,
+                pax: attending === 'No' ? 0 : pax,
                 customResponses: customResponses,
                 submittedAt: serverTimestamp()
             };
