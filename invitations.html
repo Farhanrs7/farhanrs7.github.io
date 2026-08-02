@@ -433,9 +433,20 @@
         let activeFormFields = [];
 
         // Check URL for pre-filled invitation ID (e.g., /invitations/?id=INV-101)
+        // Automatically extract invitation ID from URL path or query params
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const idFromUrl = urlParams.get('id') || urlParams.get('code');
+            let idFromUrl = urlParams.get('id') || urlParams.get('code');
+        
+            // If no query parameter, check if ID is embedded in path (/invitations/INV-123)
+            if (!idFromUrl) {
+                const pathSegments = window.location.pathname.split('/').filter(Boolean);
+                // If path is like /invitations/INV-8821, the 2nd segment is the ID
+                if (pathSegments.length >= 2 && pathSegments[0] === 'invitations') {
+                    idFromUrl = decodeURIComponent(pathSegments[1]);
+                }
+            }
+        
             if (idFromUrl) {
                 inputId.value = idFromUrl;
                 loadInvitation(idFromUrl);
