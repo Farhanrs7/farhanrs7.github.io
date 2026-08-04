@@ -427,7 +427,7 @@
                 submittedAt: serverTimestamp()
             };
 
-            const responseDocRef = doc(db, "invitations", activeInvitationId, "responses", customDocId);
+            const responseDocRef = doc(db, "invitations", activeInvitationId, "guests", customDocId);
             await setDoc(responseDocRef, responsePayload);
 
             cardRsvp.classList.add('hidden');
