@@ -106,7 +106,15 @@
             </form>
         </div>
 
-        <!-- CARD 3: SUCCESS CONFIRMATION -->
+        <!-- CARD 3: RSVP CLOSED / DISABLED -->
+        <div class="rsvp-card hidden" id="card-disabled">
+            <span class="badge" style="background: rgba(229, 57, 53, 0.1); color: var(--danger-red); border-color: rgba(229, 57, 53, 0.2);">RSVP Closed</span>
+            <h1 id="disabled-title">RSVP Submissions Closed</h1>
+            <p class="subtitle" id="disabled-message">The host is no longer accepting RSVP submissions for this event. Thank you for your interest!</p>
+            <a href="/" class="btn-primary" style="display: inline-block; text-decoration: none;">Back to MajlisHub</a>
+        </div>
+
+        <!-- CARD 4: SUCCESS CONFIRMATION -->
         <div class="rsvp-card hidden" id="card-success">
             <span class="badge">Thank You</span>
             <h1>RSVP Submitted!</h1>
@@ -195,6 +203,23 @@
                 activeInvitationId = invId;
                 const data = invSnap.data();
                 
+                // Check if RSVP link is enabled / active
+                const isRsvpActive = (data.isRsvpActive !== false) &&
+                                     (data.rsvpActive !== false) &&
+                                     (data.isActive !== false) &&
+                                     (data.rsvpEnabled !== false) &&
+                                     (data.enabled !== false) &&
+                                     (data.status !== 'disabled') &&
+                                     (data.status !== 'closed') &&
+                                     (data.status !== 'inactive');
+
+                if (!isRsvpActive) {
+                    if (data.title) document.getElementById('disabled-title').innerText = `${data.title} - RSVP Closed`;
+                    cardLookup.classList.add('hidden');
+                    document.getElementById('card-disabled').classList.remove('hidden');
+                    return;
+                }
+
                 // Render Header Details
                 if (data.title) document.getElementById('inv-title').innerText = data.title;
                 if (data.subtitle) document.getElementById('inv-subtitle').innerText = data.subtitle;
@@ -325,6 +350,27 @@
         btnSubmit.innerText = "Submitting...";
 
         try {
+            // Re-verify that RSVP link is still active prior to writing response to Firestore
+            const invRef = doc(db, "invitations", activeInvitationId);
+            const invSnap = await getDoc(invRef);
+            if (invSnap.exists()) {
+                const data = invSnap.data();
+                const isRsvpActive = (data.isRsvpActive !== false) &&
+                                     (data.rsvpActive !== false) &&
+                                     (data.isActive !== false) &&
+                                     (data.rsvpEnabled !== false) &&
+                                     (data.enabled !== false) &&
+                                     (data.status !== 'disabled') &&
+                                     (data.status !== 'closed') &&
+                                     (data.status !== 'inactive');
+
+                if (!isRsvpActive) {
+                    cardRsvp.classList.add('hidden');
+                    document.getElementById('card-disabled').classList.remove('hidden');
+                    return;
+                }
+            }
+
             const attending = document.querySelector('input[name="attending"]:checked').value;
             const name = document.getElementById('guest-name').value.trim();
             const pax = parseInt(document.getElementById('guest-pax').value, 10) || 1;
