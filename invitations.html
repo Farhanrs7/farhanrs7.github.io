@@ -134,7 +134,7 @@
 <!-- FIREBASE MODULE LOGIC -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, collection, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyDEtHh0CYcAF1F3VufD40dg7RxUgwBD07k",
@@ -377,24 +377,58 @@
             const name = document.getElementById('guest-name').value.trim();
             const pax = parseInt(document.getElementById('guest-pax').value, 10) || 1;
 
-            const customResponses = {};
+            // Generate custom document ID formatted as YYYYMMDD_HHMMSS_ms
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ms = String(now.getMilliseconds()).padStart(3, '0');
+            
+            const customDocId = `${year}${month}${day}_${hours}${minutes}${seconds}_${ms}`;
+
+            // Map status label ('Attending', 'Declined', 'Pending' / 'Maybe')
+            let rsvpStatus = 'Attending';
+            if (attending === 'No') {
+                rsvpStatus = 'Declined';
+            } else if (attending === 'Maybe') {
+                rsvpStatus = 'Pending';
+            }
+
+            // Read dynamic/custom form responses (e.g. phone, group, etc.)
+            const dynamicResponses = {};
+            let extractedPhone = "";
+            let extractedGroup = "";
+
             activeFormFields.forEach((field, index) => {
                 const element = document.getElementById(`dynamic_field_${index}`);
                 if (element) {
-                    customResponses[field.name] = element.value;
+                    const val = element.value.trim();
+                    const fName = (field.name || '').toLowerCase();
+                    dynamicResponses[field.name] = val;
+
+                    if (fName === 'phone') extractedPhone = val;
+                    if (fName === 'group') extractedGroup = val;
                 }
             });
 
+            // Flatten payload structure matching required app schema
             const responsePayload = {
+                id: customDocId,
                 name: name,
-                attending: attending,
+                status: rsvpStatus,
                 pax: attending === 'No' ? 0 : pax,
-                customResponses: customResponses,
+                phone: extractedPhone,
+                group: extractedGroup,
+                attending: attending,
+                ...dynamicResponses,
                 submittedAt: serverTimestamp()
             };
 
-            const responsesRef = collection(db, "invitations", activeInvitationId, "responses");
-            await addDoc(responsesRef, responsePayload);
+            const responseDocRef = doc(db, "invitations", activeInvitationId, "responses", customDocId);
+            await setDoc(responseDocRef, responsePayload);
 
             cardRsvp.classList.add('hidden');
             cardSuccess.classList.remove('hidden');
