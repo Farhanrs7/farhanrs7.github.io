@@ -203,8 +203,9 @@
                 activeInvitationId = invId;
                 const data = invSnap.data();
                 
-                // Check if RSVP link is enabled / active
-                const isRsvpActive = (data.isRsvpActive !== false) &&
+                // Check if RSVP link is enabled / active using isRsvpEnabled
+                const isRsvpActive = (data.isRsvpEnabled !== false) &&
+                                     (data.isRsvpActive !== false) &&
                                      (data.rsvpActive !== false) &&
                                      (data.isActive !== false) &&
                                      (data.rsvpEnabled !== false) &&
@@ -355,7 +356,8 @@
             const invSnap = await getDoc(invRef);
             if (invSnap.exists()) {
                 const data = invSnap.data();
-                const isRsvpActive = (data.isRsvpActive !== false) &&
+                const isRsvpActive = (data.isRsvpEnabled !== false) &&
+                                     (data.isRsvpActive !== false) &&
                                      (data.rsvpActive !== false) &&
                                      (data.isActive !== false) &&
                                      (data.rsvpEnabled !== false) &&
